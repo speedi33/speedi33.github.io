@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bar Wheel Spinner</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    h1 {
+      color: white;
+      margin-bottom: 30px;
+      font-size: 2.5em;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .wheel-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    canvas {
+      display: block;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+      width: 100%;
+      height: auto;
+    }
+
+    .pointer {
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 25px solid #ff6b6b;
+      margin-bottom: -5px;
+      filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.2));
+    }
+
+    .button-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      padding: 12px 30px;
+      font-size: 1.1em;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    #spinBtn {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+      color: white;
+      padding: 15px 50px;
+      font-size: 1.2em;
+    }
+
+    #spinBtn:hover:not(:disabled) {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    }
+
+    #spinBtn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    #mapsBtn {
+      background: linear-gradient(135deg, #4285f4 0%, #1f6feb 100%);
+      color: white;
+      display: none;
+    }
+
+    #mapsBtn.show {
+      display: inline-block;
+      animation: slideIn 0.4s ease;
+    }
+
+    #mapsBtn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(66, 133, 244, 0.4);
+    }
+
+    .result-text {
+      color: white;
+      font-size: 1.3em;
+      margin-top: 15px;
+      min-height: 30px;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .remaining {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.95em;
+      margin-top: 10px;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.8em;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 0.95em;
+      }
+
+      #spinBtn {
+        padding: 12px 35px;
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🎡 Bar Wheel</h1>
+
+    <div class="wheel-container">
+      <div class="pointer"></div>
+      <canvas id="wheelCanvas" width="500" height="500"></canvas>
+
+      <div class="result-text" id="resultText"></div>
+      <div class="remaining" id="remaining"></div>
+
+      <div class="button-group">
+        <button id="spinBtn">SPIN!</button>
+        <button id="mapsBtn">📍 Navigate to Google Maps</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const options = [
+      { name: 'Eisgrub-Bräu', color: '#FFB347' },
+      { name: 'Spiritus', color: '#FF6B6B' },
+      { name: 'The Porter House', color: '#8B4513' },
+      { name: 'Waschmaschinensalon', color: '#4ECDC4' },
+      { name: 'Sixties', color: '#95E1D3' },
+      { name: 'Onkel Willis Pub', color: '#F38181' }
+    ];
+
+    // Gezinkte Reihenfolge der Spins
+    const spinOrder = [
+      'Eisgrub-Bräu',
+      'Spiritus',
+      'The Porter House',
+      'Waschmaschinensalon',
+      'Sixties',
+      'Onkel Willis Pub'
+    ];
+
+    let remainingOptions = [...options];
+    let spinCount = 0;
+    let isSpinning = false;
+    let currentRotation = 0;
+    let selectedOption = null;
+
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    const spinBtn = document.getElementById('spinBtn');
+    const mapsBtn = document.getElementById('mapsBtn');
+    const resultText = document.getElementById('resultText');
+    const remainingText = document.getElementById('remaining');
+
+    // Canvas-Größe anpassen
+    function resizeCanvas() {
+      const size = Math.min(window.innerWidth - 40, 500);
+      canvas.width = size;
+      canvas.height = size;
+      drawWheel();
+    }
+
+    function drawWheel() {
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = Math.min(centerX, centerY) - 10;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(currentRotation);
+
+      const numSegments = remainingOptions.length;
+      const anglePerSegment = (2 * Math.PI) / numSegments;
+
+      for (let i = 0; i < numSegments; i++) {
+        // Segment zeichnen
+        const startAngle = i * anglePerSegment;
+        const endAngle = (i + 1) * anglePerSegment;
+
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, radius, startAngle, endAngle);
+        ctx.closePath();
+        ctx.fillStyle = remainingOptions[i].color;
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Text zeichnen
+        const textAngle = startAngle + anglePerSegment / 2;
+        ctx.save();
+        ctx.rotate(textAngle);
+        ctx.translate(radius * 0.65, 0);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        // Text umbrechen wenn nötig
+        const maxWidth = radius * 0.4;
+        ctx.fillText(remainingOptions[i].name, 0, 0);
+
+        ctx.restore();
+      }
+
+      ctx.restore();
+    }
+
+    function spin() {
+      if (isSpinning || remainingOptions.length === 0) return;
+
+      isSpinning = true;
+      spinBtn.disabled = true;
+      mapsBtn.classList.remove('show');
+      resultText.textContent = '';
+
+      // Bestimmte Option für diesen Spin
+      const targetOptionName = spinOrder[spinCount];
+      const targetIndex = remainingOptions.findIndex(opt => opt.name === targetOptionName);
+
+      if (targetIndex === -1) {
+        // Option wurde bereits entfernt
+        spinCount++;
+        isSpinning = false;
+        spinBtn.disabled = false;
+        return;
+      }
+
+      const numSegments = remainingOptions.length;
+      const anglePerSegment = (2 * Math.PI) / numSegments;
+
+      // Berechne Zielwinkel für die Option (unten/oben je nach Position)
+      // Die Pointer zeigt nach oben (0), also berechnen wir, wie viel wir drehen müssen
+      const targetAngle = anglePerSegment * targetIndex + anglePerSegment / 2;
+
+      // Mehrere volle Rotationen + Zielwinkel
+      const totalRotation = Math.PI * 2 * 5 + targetAngle;
+      const spinDuration = 4000; // 4 Sekunden
+      const startTime = Date.now();
+      const startRotation = currentRotation;
+
+      function animateSpin() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / spinDuration, 1);
+
+        // Easing-Funktion (ease-out)
+        const easeProgress = 1 - Math.pow(1 - progress, 3);
+
+        currentRotation = startRotation + totalRotation * easeProgress;
+        drawWheel();
+
+        if (progress < 1) {
+          requestAnimationFrame(animateSpin);
+        } else {
+          isSpinning = false;
+          selectedOption = remainingOptions[targetIndex];
+          spinCount++;
+          showResult();
+          spinBtn.disabled = remainingOptions.length === 1;
+        }
+      }
+
+      animateSpin();
+    }
+
+    function showResult() {
+      resultText.textContent = `🎉 ${selectedOption.name}!`;
+      mapsBtn.classList.add('show');
+      updateRemaining();
+    }
+
+    function updateRemaining() {
+      const remaining = remainingOptions.length - 1;
+      if (remaining > 0) {
+        remainingText.textContent = `${remaining} ${remaining === 1 ? 'Option' : 'Optionen'} verbleibend`;
+      } else {
+        remainingText.textContent = '✨ Alle Optionen besucht! 🎉';
+      }
+    }
+
+    function navigateToMaps() {
+      if (!selectedOption) return;
+
+      const query = encodeURIComponent(selectedOption.name);
+      window.open(`https://www.google.com/maps/search/${query}`, '_blank');
+
+      // Option entfernen
+      remainingOptions = remainingOptions.filter(opt => opt.name !== selectedOption.name);
+      selectedOption = null;
+      mapsBtn.classList.remove('show');
+      resultText.textContent = '';
+
+      drawWheel();
+
+      if (remainingOptions.length > 0) {
+        spinBtn.disabled = false;
+      } else {
+        spinBtn.disabled = true;
+        spinBtn.textContent = '✨ Alle Bars besucht!';
+      }
+    }
+
+    spinBtn.addEventListener('click', spin);
+    mapsBtn.addEventListener('click', navigateToMaps);
+    window.addEventListener('resize', resizeCanvas);
+
+    // Initial setup
+    resizeCanvas();
+    updateRemaining();
+  </script>
+</body>
+
+</html>

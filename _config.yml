@@ -1,0 +1,10 @@
+# GitHub Pages Configuration
+theme: jekyll-theme-minimal
+title: Bar Wheel
+description: Ein interaktives Spinning Wheel zur Barauswahl
+show_downloads: false
+
+# Build settings
+markdown: GFM
+plugins:
+  - jekyll-feed
