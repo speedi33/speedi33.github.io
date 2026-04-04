@@ -250,7 +250,7 @@
     }
 
     function spin() {
-      if (isSpinning || remainingOptions.length === 0) return;
+      if (isSpinning || remainingOptions.length === 0 || selectedOption !== null) return;
 
       isSpinning = true;
       spinBtn.disabled = true;
