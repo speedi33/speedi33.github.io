@@ -226,7 +226,6 @@
       <canvas id="wheelCanvas" width="500" height="500"></canvas>
 
       <div class="result-text" id="resultText"></div>
-      <div class="completed" id="completed"></div>
 
       <div class="button-group">
         <button id="spinBtn">SPIN!</button>
@@ -251,17 +250,7 @@
       { name: 'Singe mit jemand anderem im Duett', color: '#A8D8EA' }
     ];
 
-    // Gezinkte Reihenfolge - diese 5 Tasks müssen erfüllt werden
-    const spinOrder = [
-      'Singe ein Lied',
-      'Mach 10 Liegestütze',
-      'Tanze 30 Sekunden im Kreis',
-      'Mach 5 Kniebeugen',
-      'Erzähle einen Witz'
-    ];
-
     let remainingTasks = [...tasks];
-    let spinCount = 0;
     let isSpinning = false;
     let currentRotation = 0;
     let selectedTask = null;
@@ -272,7 +261,6 @@
     const spinBtn = document.getElementById('spinBtn');
     const confirmBtn = document.getElementById('confirmBtn');
     const resultText = document.getElementById('resultText');
-    const completedText = document.getElementById('completed');
     const resetBtn = document.getElementById('resetBtn');
 
     // LocalStorage Funktionen
@@ -281,8 +269,7 @@
         remainingTaskNames: remainingTasks.map(t => t.name),
         completedTaskNames: completedTasks,
         currentRotation: currentRotation,
-        selectedTaskName: selectedTask ? selectedTask.name : null,
-        spinCount: spinCount
+        selectedTaskName: selectedTask ? selectedTask.name : null
       };
       localStorage.setItem('jgaTasksState', JSON.stringify(state));
     }
@@ -296,7 +283,6 @@
         ).filter(t => t);
         completedTasks = state.completedTaskNames;
         currentRotation = state.currentRotation;
-        spinCount = state.spinCount;
         if (state.selectedTaskName) {
           selectedTask = tasks.find(t => t.name === state.selectedTaskName);
         }
@@ -307,7 +293,6 @@
       if (confirm('Möchtest du alle erledigten Aufgaben zurücksetzen?')) {
         remainingTasks = [...tasks];
         completedTasks = [];
-        spinCount = 0;
         currentRotation = 0;
         selectedTask = null;
         resultText.textContent = '';
@@ -315,7 +300,6 @@
         spinBtn.disabled = false;
         spinBtn.textContent = 'SPIN!';
         saveState();
-        updateCompleted();
         drawWheel();
       }
     }
@@ -366,12 +350,8 @@
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        // Überprüfe ob es eine erforderliche Task ist
-        const isRequired = spinOrder.includes(remainingTasks[i].name);
-        const displayName = isRequired ? '⭐ ' + remainingTasks[i].name : remainingTasks[i].name;
-
         // Text umbrechen wenn nötig
-        const words = displayName.split(' ');
+        const words = remainingTasks[i].name.split(' ');
         const maxWordsPerLine = 2;
         let line1 = '';
         let line2 = '';
@@ -403,17 +383,9 @@
       confirmBtn.classList.remove('show');
       resultText.textContent = '';
 
-      // Bestimmte Task für diesen Spin (Gezinkt!)
-      const targetTaskName = spinOrder[spinCount];
-      const targetIndex = remainingTasks.findIndex(t => t.name === targetTaskName);
-
-      if (targetIndex === -1) {
-        // Task wurde bereits entfernt - sollte nicht passieren, aber fallback
-        spinCount++;
-        isSpinning = false;
-        spinBtn.disabled = false;
-        return;
-      }
+      // Zufällige Aufgabe
+      const randomIndex = Math.floor(Math.random() * remainingTasks.length);
+      const targetIndex = randomIndex;
 
       const numSegments = remainingTasks.length;
       const anglePerSegment = (2 * Math.PI) / numSegments;
@@ -451,7 +423,6 @@
           currentRotation = ((currentRotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
           isSpinning = false;
           selectedTask = remainingTasks[targetIndex];
-          spinCount++;
           showResult();
           spinBtn.disabled = true;
           saveState();
@@ -492,23 +463,28 @@
       }
     }
 
-    function updateCompleted() {
-      // Zähle erfüllte erforderliche Tasks
-      const completedRequiredTasks = completedTasks.filter(taskName =>
-        spinOrder.includes(taskName)
-      ).length;
+    function confirmTask() {
+      if (!selectedTask) return;
 
-      let text = `✅ Fertig: ${completedTasks.length} / ${tasks.length}`;
+      completedTasks.push(selectedTask.name);
+      remainingTasks = remainingTasks.filter(t => t.name !== selectedTask.name);
+      selectedTask = null;
+      confirmBtn.classList.remove('show');
+      resultText.textContent = '';
 
-      // Zeige erforderliche Tasks an
-      if (completedRequiredTasks < spinOrder.length) {
-        text += ` | ⭐ Pflicht: ${completedRequiredTasks} / ${spinOrder.length}`;
-      } else {
-        text += ` | 🎉 ALLE PFLICHT-AUFGABEN ERFÜLLT!`;
+      // Setze das Wheel auf eine zufällige Position
+      if (remainingTasks.length > 0) {
+        currentRotation = Math.random() * 2 * Math.PI;
       }
 
-      if (completedTasks.length > 0 || completedRequiredTasks > 0) {
-        completedText.textContent = text;
+      drawWheel();
+      saveState();
+
+      if (remainingTasks.length > 0) {
+        spinBtn.disabled = false;
+      } else {
+        spinBtn.disabled = true;
+        spinBtn.textContent = '🎉 Alle Aufgaben erledigt!';
       }
     }
 
@@ -521,7 +497,6 @@
     // Initial setup
     loadState();
     resizeCanvas();
-    updateCompleted();
 
     // Zeige das Ergebnis wenn es geladen wurde
     if (selectedTask) {
@@ -531,7 +506,5 @@
     }
   </script>
 </body>
-
-</html>
 
 </html>
