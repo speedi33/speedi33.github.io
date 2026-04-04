@@ -503,30 +503,35 @@
       // Zeige erforderliche Tasks an
       if (completedRequiredTasks < spinOrder.length) {
         text += ` | ⭐ Pflicht: ${completedRequiredTasks} / ${spinOrder.length}`;
-
-        if (completedTasks.length > 0 || completedRequiredTasks > 0) {
-          completedText.textContent = text;
-        }
+      } else {
+        text += ` | 🎉 ALLE PFLICHT-AUFGABEN ERFÜLLT!`;
       }
 
-      spinBtn.addEventListener('click', spin);
-      canvas.addEventListener('click', spin);
-      confirmBtn.addEventListener('click', confirmTask);
-      resetBtn.addEventListener('click', resetAll);
-      window.addEventListener('resize', resizeCanvas);
-
-      // Initial setup
-      loadState();
-      resizeCanvas();
-      updateCompleted();
-
-      // Zeige das Ergebnis wenn es geladen wurde
-      if (selectedTask) {
-        resultText.textContent = `🎯 ${selectedTask.name}`;
-        confirmBtn.classList.add('show');
-        spinBtn.disabled = true;
+      if (completedTasks.length > 0 || completedRequiredTasks > 0) {
+        completedText.textContent = text;
       }
+    }
+
+    spinBtn.addEventListener('click', spin);
+    canvas.addEventListener('click', spin);
+    confirmBtn.addEventListener('click', confirmTask);
+    resetBtn.addEventListener('click', resetAll);
+    window.addEventListener('resize', resizeCanvas);
+
+    // Initial setup
+    loadState();
+    resizeCanvas();
+    updateCompleted();
+
+    // Zeige das Ergebnis wenn es geladen wurde
+    if (selectedTask) {
+      resultText.textContent = `🎯 ${selectedTask.name}`;
+      confirmBtn.classList.add('show');
+      spinBtn.disabled = true;
+    }
   </script>
 </body>
+
+</html>
 
 </html>
