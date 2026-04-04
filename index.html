@@ -201,6 +201,29 @@
       border-top: 5px solid #667eea;
     }
 
+    .tutorial-section.hidden {
+      display: none;
+    }
+
+    .tutorial-toggle-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-size: 0.95em;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      margin-bottom: 40px;
+    }
+
+    .tutorial-toggle-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+
     .info-text {
       background: rgba(255, 255, 255, 0.9);
       border-radius: 10px;
@@ -255,8 +278,10 @@
     <h1>🎉 Hövel JGA</h1>
     <p class="subtitle">Eine unvergessliche Nacht wartet auf dich!</p>
 
+    <button id="tutorialToggleBtn" class="tutorial-toggle-btn">📖 Tutorial anzeigen</button>
+
     <!-- Tutorial Section -->
-    <div class="tutorial-section">
+    <div id="tutorialSection" class="tutorial-section">
       <h2>🎯 Wie funktioniert der JGA-Ablauf?</h2>
 
       <div class="tutorial-steps">
@@ -308,6 +333,43 @@
       Bars, dokumentiere alles mit Fotos oder Videos. Das wird eine legendäre Nacht! 🎉🍻
     </div>
   </div>
+
+  <script>
+    // Tutorial Visibility Management
+    const tutorialSection = document.getElementById('tutorialSection');
+    const tutorialToggleBtn = document.getElementById('tutorialToggleBtn');
+    const TUTORIAL_KEY = 'jgaTutorialSeen';
+
+    function initTutorial() {
+      const tutorialSeen = localStorage.getItem(TUTORIAL_KEY);
+
+      if (tutorialSeen) {
+        // Tutorial wurde bereits gesehen, verstecken
+        tutorialSection.classList.add('hidden');
+        tutorialToggleBtn.textContent = '📖 Tutorial anzeigen';
+      } else {
+        // Erstes Mal - Tutorial anzeigen und speichern
+        tutorialSection.classList.remove('hidden');
+        tutorialToggleBtn.textContent = '📖 Tutorial verstecken';
+        localStorage.setItem(TUTORIAL_KEY, 'true');
+      }
+    }
+
+    function toggleTutorial() {
+      tutorialSection.classList.toggle('hidden');
+
+      if (tutorialSection.classList.contains('hidden')) {
+        tutorialToggleBtn.textContent = '📖 Tutorial anzeigen';
+      } else {
+        tutorialToggleBtn.textContent = '📖 Tutorial verstecken';
+      }
+    }
+
+    tutorialToggleBtn.addEventListener('click', toggleTutorial);
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', initTutorial);
+  </script>
 </body>
 
 </html>
