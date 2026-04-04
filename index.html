@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hövel JGA</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      color: white;
+      font-size: 3em;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .subtitle {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.2em;
+      margin-bottom: 50px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .cards-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-emoji {
+      font-size: 3em;
+    }
+
+    .card-title {
+      font-size: 1.8em;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .card-description {
+      color: #666;
+      font-size: 0.95em;
+      line-height: 1.5;
+    }
+
+    .card.jga-tasks {
+      border-top: 5px solid #f5576c;
+    }
+
+    .card.bar-wheel {
+      border-top: 5px solid #764ba2;
+    }
+
+    @media (max-width: 768px) {
+      .cards-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      h1 {
+        font-size: 2em;
+      }
+
+      .card {
+        padding: 30px;
+      }
+
+      .card-emoji {
+        font-size: 2.5em;
+      }
+
+      .card-title {
+        font-size: 1.5em;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🎉 Hövel JGA</h1>
+    <p class="subtitle">Wähle eine App aus</p>
+
+    <div class="cards-container">
+      <a href="jga_tasks/index.html" class="card jga-tasks">
+        <div class="card-emoji">🎯</div>
+        <div class="card-title">JGA Task Wheel</div>
+        <div class="card-description">Spinn das Rad und erfülle zufällige Aufgaben!</div>
+      </a>
+
+      <a href="bar_wheel/index.html" class="card bar-wheel">
+        <div class="card-emoji">🎡</div>
+        <div class="card-title">Bar Wheel</div>
+        <div class="card-description">Lasse das Rad entscheiden, welche Bar ihr besucht!</div>
+      </a>
+    </div>
+  </div>
+</body>
+
+</html>
