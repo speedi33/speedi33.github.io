@@ -114,16 +114,6 @@
       box-shadow: 0 6px 20px rgba(52, 168, 83, 0.4);
     }
 
-    #resetBtn {
-      background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
-      color: white;
-    }
-
-    #resetBtn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
-    }
-
     .result-text {
       color: white;
       font-size: 1.3em;
@@ -191,7 +181,6 @@
       <div class="button-group">
         <button id="spinBtn">SPIN!</button>
         <button id="confirmBtn">✅ Erledigt!</button>
-        <button id="resetBtn">🔄 Reset</button>
       </div>
     </div>
   </div>
@@ -222,7 +211,6 @@
     const ctx = canvas.getContext('2d');
     const spinBtn = document.getElementById('spinBtn');
     const confirmBtn = document.getElementById('confirmBtn');
-    const resetBtn = document.getElementById('resetBtn');
     const resultText = document.getElementById('resultText');
     const completedText = document.getElementById('completed');
 
@@ -250,19 +238,6 @@
           selectedTask = tasks.find(t => t.name === state.selectedTaskName);
         }
       }
-    }
-
-    function resetState() {
-      remainingTasks = [...tasks];
-      completedTasks = [];
-      currentRotation = 0;
-      selectedTask = null;
-      resultText.textContent = '';
-      completedText.textContent = '';
-      confirmBtn.classList.remove('show');
-      spinBtn.disabled = false;
-      localStorage.removeItem('jgaTasksState');
-      drawWheel();
     }
 
     // Canvas-Größe anpassen
@@ -310,13 +285,13 @@
         ctx.font = 'bold 12px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        
+
         // Text umbrechen wenn nötig
         const words = remainingTasks[i].name.split(' ');
         const maxWordsPerLine = 2;
         let line1 = '';
         let line2 = '';
-        
+
         for (let j = 0; j < words.length; j++) {
           if (j < maxWordsPerLine) {
             line1 += words[j] + ' ';
@@ -324,14 +299,14 @@
             line2 += words[j] + ' ';
           }
         }
-        
+
         if (line2) {
           ctx.fillText(line1.trim(), textX, textY - 8);
           ctx.fillText(line2.trim(), textX, textY + 8);
         } else {
           ctx.fillText(line1.trim(), textX, textY);
         }
-        
+
         ctx.restore();
       }
     }
@@ -434,7 +409,6 @@
     spinBtn.addEventListener('click', spin);
     canvas.addEventListener('click', spin);
     confirmBtn.addEventListener('click', confirmTask);
-    resetBtn.addEventListener('click', resetState);
     window.addEventListener('resize', resizeCanvas);
 
     // Initial setup
