@@ -336,6 +336,11 @@
       mapsBtn.classList.remove('show');
       resultText.textContent = '';
 
+      // Setze das Wheel auf eine zufällige Position
+      if (remainingOptions.length > 0) {
+        currentRotation = Math.random() * 2 * Math.PI;
+      }
+
       drawWheel();
 
       if (remainingOptions.length > 0) {
@@ -347,6 +352,7 @@
     }
 
     spinBtn.addEventListener('click', spin);
+    canvas.addEventListener('click', spin);
     mapsBtn.addEventListener('click', navigateToMaps);
     window.addEventListener('resize', resizeCanvas);
 
