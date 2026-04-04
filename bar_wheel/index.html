@@ -167,7 +167,6 @@
       <canvas id="wheelCanvas" width="500" height="500"></canvas>
 
       <div class="result-text" id="resultText"></div>
-      <div class="remaining" id="remaining"></div>
 
       <div class="button-group">
         <button id="spinBtn">SPIN!</button>
@@ -329,16 +328,6 @@
     function showResult() {
       resultText.textContent = `🎉 ${selectedOption.name}!`;
       mapsBtn.classList.add('show');
-      updateRemaining();
-    }
-
-    function updateRemaining() {
-      const remaining = remainingOptions.length - 1;
-      if (remaining > 0) {
-        remainingText.textContent = `${remaining} ${remaining === 1 ? 'Option' : 'Optionen'} verbleibend`;
-      } else {
-        remainingText.textContent = '✨ Alle Optionen besucht! 🎉';
-      }
     }
 
     function navigateToMaps() {
