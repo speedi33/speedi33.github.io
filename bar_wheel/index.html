@@ -156,13 +156,6 @@
       box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
     }
 
-    .visited-list {
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 0.95em;
-      margin-top: 15px;
-      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
-    }
-
     @keyframes slideIn {
       from {
         opacity: 0;
@@ -218,7 +211,6 @@
       <canvas id="wheelCanvas" width="500" height="500"></canvas>
 
       <div class="result-text" id="resultText"></div>
-      <div class="visited-list" id="visitedList"></div>
 
       <div class="button-group">
         <button id="spinBtn">SPIN!</button>
@@ -256,7 +248,6 @@
     let isSpinning = false;
     let currentRotation = 0;
     let selectedOption = null;
-    let visitedBars = [];
 
     const canvas = document.getElementById('wheelCanvas');
     const ctx = canvas.getContext('2d');
@@ -264,13 +255,11 @@
     const mapsBtn = document.getElementById('mapsBtn');
     const resultText = document.getElementById('resultText');
     const resetBtn = document.getElementById('resetBtn');
-    const visitedList = document.getElementById('visitedList');
 
     // LocalStorage Funktionen
     function saveState() {
       const state = {
         remainingBarNames: remainingOptions.map(b => b.name),
-        visitedBarNames: visitedBars,
         currentRotation: currentRotation,
         selectedBarName: selectedOption ? selectedOption.name : null,
         spinCount: spinCount
@@ -285,7 +274,6 @@
         remainingOptions = state.remainingBarNames.map(name =>
           options.find(b => b.name === name)
         ).filter(b => b);
-        visitedBars = state.visitedBarNames;
         currentRotation = state.currentRotation;
         spinCount = state.spinCount;
         if (state.selectedBarName) {
@@ -297,7 +285,6 @@
     function resetAll() {
       if (confirm('Möchtest du alle besuchten Bars zurücksetzen?')) {
         remainingOptions = [...options];
-        visitedBars = [];
         spinCount = 0;
         currentRotation = 0;
         selectedOption = null;
@@ -306,7 +293,6 @@
         spinBtn.disabled = false;
         spinBtn.textContent = 'SPIN!';
         saveState();
-        updateVisitedList();
         drawWheel();
       }
     }
@@ -442,7 +428,6 @@
       window.open(`https://maps.app.goo.gl/${selectedOption.mapsLink}`, '_blank');
 
       // Option entfernen
-      visitedBars.push(selectedOption.name);
       remainingOptions = remainingOptions.filter(opt => opt.name !== selectedOption.name);
       selectedOption = null;
       mapsBtn.classList.remove('show');
@@ -454,7 +439,6 @@
       }
 
       drawWheel();
-      updateVisitedList();
       saveState();
 
       if (remainingOptions.length > 0) {
@@ -462,14 +446,6 @@
       } else {
         spinBtn.disabled = true;
         spinBtn.textContent = '✨ Alle Bars besucht!';
-      }
-    }
-
-    function updateVisitedList() {
-      if (visitedBars.length > 0) {
-        visitedList.textContent = `✅ Besucht: ${visitedBars.length} / ${options.length}`;
-      } else {
-        visitedList.textContent = '';
       }
     }
 
@@ -482,7 +458,6 @@
     // Initial setup
     loadState();
     resizeCanvas();
-    updateVisitedList();
 
     // Zeige das Ergebnis wenn es geladen wurde
     if (selectedOption) {
