@@ -280,12 +280,13 @@
       const numSegments = remainingOptions.length;
       const anglePerSegment = (2 * Math.PI) / numSegments;
 
-      // Berechne Zielwinkel für die Option
-      // Die Pointer zeigt nach oben (3π/2 in Canvas-Koordinaten)
-      // Die Mitte von Segment targetIndex sollte bei der Pointer landen
-      // Mitte = targetIndex * anglePerSegment + anglePerSegment / 2
-      // Also: currentRotation + targetIndex * anglePerSegment + anglePerSegment / 2 = 3π/2
-      const targetAngle = 3 * Math.PI / 2 - (targetIndex + 0.5) * anglePerSegment;
+      // Berechne Zielwinkel: Die Mitte von Segment targetIndex sollte bei 3π/2 (oben) landen
+      // Mitte von Segment = currentRotation + (targetIndex + 0.5) * anglePerSegment = 3π/2
+      // Also: targetAngle = 3π/2 - (targetIndex + 0.5) * anglePerSegment
+      let targetAngle = (3 * Math.PI / 2) - (targetIndex + 0.5) * anglePerSegment;
+
+      // Normalisiere targetAngle auf [0, 2π)
+      targetAngle = ((targetAngle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
 
       // Mehrere volle Rotationen + Zielwinkel
       const fullRotations = 5;
@@ -307,6 +308,8 @@
         if (progress < 1) {
           requestAnimationFrame(animateSpin);
         } else {
+          // Normalisiere currentRotation auf [0, 2π)
+          currentRotation = ((currentRotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
           isSpinning = false;
           selectedOption = remainingOptions[targetIndex];
           spinCount++;
