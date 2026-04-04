@@ -281,10 +281,11 @@
       const anglePerSegment = (2 * Math.PI) / numSegments;
 
       // Berechne Zielwinkel für die Option
-      // Die Pointer zeigt nach oben (π/2)
-      // Das Segment targetIndex sollte bei der Pointer landen
-      // Also: currentRotation + targetIndex * anglePerSegment = π/2
-      const targetAngle = Math.PI / 2 - targetIndex * anglePerSegment;
+      // Die Pointer zeigt nach oben (3π/2 in Canvas-Koordinaten)
+      // Die Mitte von Segment targetIndex sollte bei der Pointer landen
+      // Mitte = targetIndex * anglePerSegment + anglePerSegment / 2
+      // Also: currentRotation + targetIndex * anglePerSegment + anglePerSegment / 2 = 3π/2
+      const targetAngle = 3 * Math.PI / 2 - (targetIndex + 0.5) * anglePerSegment;
 
       // Mehrere volle Rotationen + Zielwinkel
       const fullRotations = 5;
