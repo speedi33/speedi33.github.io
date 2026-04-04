@@ -164,7 +164,7 @@
 
       <div class="button-group">
         <button id="spinBtn">SPIN!</button>
-        <button id="mapsBtn">📍 Navigate to Google Maps</button>
+        <button id="mapsBtn">📍 Navigieren</button>
       </div>
     </div>
   </div>
@@ -173,7 +173,7 @@
     const options = [
       { name: 'Eisgrub-Bräu', color: '#FFB347' },
       { name: 'Spiritus', color: '#FF6B6B' },
-      { name: 'The Porter House', color: '#8B4513' },
+      { name: 'The Porter House', mapsName: 'The Porter House Irish Pub', color: '#8B4513' },
       { name: 'Waschmaschinensalon', color: '#4ECDC4' },
       { name: 'Sixties', color: '#95E1D3' },
       { name: 'Onkel Willis Pub', color: '#F38181' }
@@ -326,8 +326,12 @@
 
     function navigateToMaps() {
       if (!selectedOption) return;
-
-      const query = encodeURIComponent(selectedOption.name);
+      let query;
+      if (!selectedOption.mapsName) {
+        query = encodeURIComponent(selectedOption.name);
+      } else {
+        query = encodeURIComponent(selectedOption.mapsName);
+      }
       window.open(`https://www.google.com/maps/search/${query}`, '_blank');
 
       // Option entfernen
