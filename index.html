@@ -17,13 +17,15 @@
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 20px;
+      overflow-x: hidden;
     }
 
     .container {
-      max-width: 800px;
+      max-width: 1000px;
       width: 100%;
       text-align: center;
     }
@@ -38,8 +40,88 @@
     .subtitle {
       color: rgba(255, 255, 255, 0.9);
       font-size: 1.2em;
-      margin-bottom: 50px;
+      margin-bottom: 40px;
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .tutorial-section {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 35px;
+      margin-bottom: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      text-align: left;
+    }
+
+    .tutorial-section h2 {
+      font-size: 2em;
+      color: #333;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .tutorial-steps {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 25px;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      padding: 25px;
+      background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+      border-radius: 10px;
+      border-left: 5px solid #667eea;
+    }
+
+    .step.second {
+      border-left-color: #f5576c;
+    }
+
+    .step-number {
+      font-size: 2.5em;
+      font-weight: bold;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .step.second .step-number {
+      background: linear-gradient(135deg, #f5576c 0%, #ee5a6f 100%);
+    }
+
+    .step-title {
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .step-description {
+      color: #666;
+      font-size: 0.95em;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .tutorial-note {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 18px;
+      border-radius: 5px;
+      color: #856404;
+      margin-top: 20px;
+      text-align: center;
+      font-weight: 500;
     }
 
     .cards-container {
@@ -61,6 +143,7 @@
       flex-direction: column;
       align-items: center;
       gap: 15px;
+      position: relative;
     }
 
     .card:hover {
@@ -68,8 +151,34 @@
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
     }
 
+    .card-order {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.3em;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .card.bar-wheel .card-order {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .card.jga-tasks .card-order {
+      background: linear-gradient(135deg, #f5576c 0%, #ee5a6f 100%);
+    }
+
     .card-emoji {
       font-size: 3em;
+      margin-top: 10px;
     }
 
     .card-title {
@@ -89,11 +198,27 @@
     }
 
     .card.bar-wheel {
-      border-top: 5px solid #764ba2;
+      border-top: 5px solid #667eea;
+    }
+
+    .info-text {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      padding: 22px;
+      color: #333;
+      margin-top: 30px;
+      font-size: 1.05em;
+      line-height: 1.7;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
     @media (max-width: 768px) {
       .cards-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .tutorial-steps {
         grid-template-columns: 1fr;
         gap: 20px;
       }
@@ -113,6 +238,14 @@
       .card-title {
         font-size: 1.5em;
       }
+
+      .tutorial-section {
+        padding: 25px;
+      }
+
+      .tutorial-section h2 {
+        font-size: 1.5em;
+      }
     }
   </style>
 </head>
@@ -120,20 +253,59 @@
 <body>
   <div class="container">
     <h1>🎉 Hövel JGA</h1>
-    <p class="subtitle">Wähle ein Wheel aus</p>
+    <p class="subtitle">Eine unvergessliche Nacht wartet auf dich!</p>
 
+    <!-- Tutorial Section -->
+    <div class="tutorial-section">
+      <h2>🎯 Wie funktioniert der JGA-Ablauf?</h2>
+
+      <div class="tutorial-steps">
+        <div class="step">
+          <div class="step-number">1️⃣</div>
+          <div class="step-title">Bar Wheel drehen</div>
+          <div class="step-description">
+            Starte mit dem <strong>Bar Wheel</strong>. Es bestimmt, welche <strong>Bar euer nächstes Ziel</strong> ist.
+            Danach geht ihr hin! 🍻
+          </div>
+        </div>
+
+        <div class="step second">
+          <div class="step-number">2️⃣</div>
+          <div class="step-title">Task Wheel drehen</div>
+          <div class="step-description">
+            Danach drückst du das <strong>Task Wheel</strong>. Es zeigt deine Aufgabe, die du <strong>bis zur nächsten
+              Bar</strong> erfüllen musst. Mit Foto oder Video bestätigen! 📸
+          </div>
+        </div>
+      </div>
+
+      <div class="tutorial-note">
+        🚨 <strong>Wichtig der Ablauf:</strong> Erst <strong>Bar Wheel</strong> (wohin?) → dann <strong>Task
+          Wheel</strong> (was tun?) → dann los zur Bar und Aufgabe erfüllen → Foto/Video als Beweis → dann wiederholt
+        sich alles!
+      </div>
+    </div>
+
+    <!-- Action Cards -->
     <div class="cards-container">
-      <a href="jga_tasks/index.html" class="card jga-tasks">
-        <div class="card-emoji">🎯</div>
-        <div class="card-title">Neue Aufgabe</div>
-        <div class="card-description">Spinn das Rad und erfülle zufällige Aufgaben!</div>
+      <a href="bar_wheel/index.html" class="card bar-wheel">
+        <div class="card-order">1️⃣</div>
+        <div class="card-emoji">🎡</div>
+        <div class="card-title">Bar Wheel</div>
+        <div class="card-description"><strong>Immer zuerst!</strong> Bestimme die nächste Bar</div>
       </a>
 
-      <a href="bar_wheel/index.html" class="card bar-wheel">
-        <div class="card-emoji">🎡</div>
-        <div class="card-title">Nächste Bar</div>
-        <div class="card-description">Lasse das Rad entscheiden, welche Bar ihr besucht!</div>
+      <a href="jga_tasks/index.html" class="card jga-tasks">
+        <div class="card-order">2️⃣</div>
+        <div class="card-emoji">🎯</div>
+        <div class="card-title">Task Wheel</div>
+        <div class="card-description"><strong>Dann danach!</strong> Welche Herausforderung wartet?</div>
       </a>
+    </div>
+
+    <div class="info-text">
+      💪 <strong>Deine Mission:</strong> Befolge die Anleitung Schritt für Schritt. Erfülle alle Aufgaben, besuche alle
+      Bars, dokumentiere alles mit Fotos oder Videos. Das wird eine legendäre Nacht! 🎉🍻
     </div>
   </div>
 </body>

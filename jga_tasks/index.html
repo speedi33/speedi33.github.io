@@ -239,11 +239,11 @@
       { name: 'Singe ein Lied', color: '#FF6B6B' },
       { name: 'Mach 10 Liegestütze', color: '#FFB347' },
       { name: 'Umarme einen Fremden', color: '#4ECDC4' },
-      { name: 'Tanze 30 Sekunden im Kreis', color: '#95E1D3' },
+      { name: 'SHOT RUNDE', color: '#95E1D3' },
       { name: 'Sag 3 Komplimente', color: '#F38181' },
       { name: 'Mach einen Handstand', color: '#AA96DA' },
       { name: 'Lauf rückwärts 20 Meter', color: '#FCBAD3' },
-      { name: 'Rufe "Hurra für den Bräutigam!"', color: '#A8E6CF' },
+      { name: 'SHOT RUNDE', color: '#A8E6CF' },
       { name: 'Mach 5 Kniebeugen', color: '#FFD3B6' },
       { name: 'Erzähle einen Witz', color: '#FFAAA5' },
       { name: 'Auf einer Bank balancieren', color: '#FF8B94' },
@@ -441,33 +441,12 @@
       if (!selectedTask) return;
 
       completedTasks.push(selectedTask.name);
-      remainingTasks = remainingTasks.filter(t => t.name !== selectedTask.name);
-      selectedTask = null;
-      confirmBtn.classList.remove('show');
-      resultText.textContent = '';
 
-      // Setze das Wheel auf eine zufällige Position
-      if (remainingTasks.length > 0) {
-        currentRotation = Math.random() * 2 * Math.PI;
+      // "SHOT RUNDE" Tasks werden NICHT entfernt, andere schon
+      if (selectedTask.name !== 'SHOT RUNDE') {
+        remainingTasks = remainingTasks.filter(t => t.name !== selectedTask.name);
       }
 
-      updateCompleted();
-      drawWheel();
-      saveState();
-
-      if (remainingTasks.length > 0) {
-        spinBtn.disabled = false;
-      } else {
-        spinBtn.disabled = true;
-        spinBtn.textContent = '🎉 Alle Aufgaben erledigt!';
-      }
-    }
-
-    function confirmTask() {
-      if (!selectedTask) return;
-
-      completedTasks.push(selectedTask.name);
-      remainingTasks = remainingTasks.filter(t => t.name !== selectedTask.name);
       selectedTask = null;
       confirmBtn.classList.remove('show');
       resultText.textContent = '';
