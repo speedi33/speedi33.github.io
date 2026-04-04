@@ -171,12 +171,12 @@
 
   <script>
     const options = [
-      { name: 'Eisgrub-Bräu', color: '#FFB347' },
-      { name: 'Spiritus', color: '#FF6B6B' },
-      { name: 'The Porter House', mapsName: 'The Porter House Irish Pub', color: '#8B4513' },
-      { name: 'Waschmaschinensalon', color: '#4ECDC4' },
-      { name: 'Sixties', color: '#95E1D3' },
-      { name: 'Onkel Willis Pub', color: '#F38181' }
+      { name: 'Eisgrub-Bräu', mapsLink: 'https://maps.app.goo.gl/ahsr67odEcxjjAiz9', color: '#FFB347' },
+      { name: 'Spiritus', mapsLink: 'https://maps.app.goo.gl/rvWHxPNoXRfjz54m7', color: '#FF6B6B' },
+      { name: 'The Porter House', mapsLink: 'https://maps.app.goo.gl/1DznhjNyazncjhk58', color: '#8B4513' },
+      { name: 'Waschmaschinensalon', mapsLink: 'https://maps.app.goo.gl/oy1sWfTtDwink26G6', color: '#4ECDC4' },
+      { name: 'Sixties', mapsLink: 'https://maps.app.goo.gl/oz7CKt13LzcnzuhFA', color: '#95E1D3' },
+      { name: 'Onkel Willis Pub', mapsLink: 'https://maps.app.goo.gl/hA6jHvimxHs3Ge4c6', color: '#F38181' }
     ];
 
     // Gezinkte Reihenfolge der Spins
@@ -326,13 +326,8 @@
 
     function navigateToMaps() {
       if (!selectedOption) return;
-      let query;
-      if (!selectedOption.mapsName) {
-        query = encodeURIComponent(selectedOption.name);
-      } else {
-        query = encodeURIComponent(selectedOption.mapsName);
-      }
-      window.open(`https://www.google.com/maps/search/${query}`, '_blank');
+
+      window.open(encodeURIComponent(selectedOption.mapsLink), '_blank');
 
       // Option entfernen
       remainingOptions = remainingOptions.filter(opt => opt.name !== selectedOption.name);
