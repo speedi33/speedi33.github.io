@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JGA Task Wheel</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    h1 {
+      color: white;
+      margin-bottom: 30px;
+      font-size: 2.5em;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .wheel-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    canvas {
+      display: block;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+      width: 100%;
+      height: auto;
+      cursor: pointer;
+    }
+
+    .pointer {
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 25px solid #ff6b6b;
+      margin-bottom: -5px;
+      filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.2));
+    }
+
+    .button-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      padding: 12px 30px;
+      font-size: 1.1em;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    #spinBtn {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+      color: white;
+      padding: 15px 50px;
+      font-size: 1.2em;
+    }
+
+    #spinBtn:hover:not(:disabled) {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    }
+
+    #spinBtn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    #confirmBtn {
+      background: linear-gradient(135deg, #34a853 0%, #2d7e44 100%);
+      color: white;
+      display: none;
+    }
+
+    #confirmBtn.show {
+      display: inline-block;
+      animation: slideIn 0.4s ease;
+    }
+
+    #confirmBtn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(52, 168, 83, 0.4);
+    }
+
+    #resetBtn {
+      background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+      color: white;
+    }
+
+    #resetBtn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+    }
+
+    .result-text {
+      color: white;
+      font-size: 1.3em;
+      margin-top: 15px;
+      min-height: 30px;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .completed {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95em;
+      margin-top: 10px;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.8em;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 0.95em;
+      }
+
+      #spinBtn {
+        padding: 12px 35px;
+        font-size: 1em;
+      }
+
+      .result-text {
+        font-size: 1.1em;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🎯 JGA Task Wheel</h1>
+
+    <div class="wheel-container">
+      <div class="pointer"></div>
+      <canvas id="wheelCanvas" width="500" height="500"></canvas>
+
+      <div class="result-text" id="resultText"></div>
+      <div class="completed" id="completed"></div>
+
+      <div class="button-group">
+        <button id="spinBtn">SPIN!</button>
+        <button id="confirmBtn">✅ Erledigt!</button>
+        <button id="resetBtn">🔄 Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const tasks = [
+      { name: 'Singe ein Lied', color: '#FF6B6B' },
+      { name: 'Mach 10 Liegestütze', color: '#FFB347' },
+      { name: 'Umarme einen Fremden', color: '#4ECDC4' },
+      { name: 'Tanze 30 Sekunden im Kreis', color: '#95E1D3' },
+      { name: 'Sag 3 Komplimente', color: '#F38181' },
+      { name: 'Mach einen Handstand', color: '#AA96DA' },
+      { name: 'Lauf rückwärts 20 Meter', color: '#FCBAD3' },
+      { name: 'Rufe "Hurra für den Bräutigam!"', color: '#A8E6CF' },
+      { name: 'Mach 5 Kniebeugen', color: '#FFD3B6' },
+      { name: 'Erzähle einen Witz', color: '#FFAAA5' },
+      { name: 'Auf einer Bank balancieren', color: '#FF8B94' },
+      { name: 'Singe mit jemand anderem im Duett', color: '#A8D8EA' }
+    ];
+
+    let remainingTasks = [...tasks];
+    let isSpinning = false;
+    let currentRotation = 0;
+    let selectedTask = null;
+    let completedTasks = [];
+
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    const spinBtn = document.getElementById('spinBtn');
+    const confirmBtn = document.getElementById('confirmBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const resultText = document.getElementById('resultText');
+    const completedText = document.getElementById('completed');
+
+    // LocalStorage Funktionen
+    function saveState() {
+      const state = {
+        remainingTaskNames: remainingTasks.map(t => t.name),
+        completedTaskNames: completedTasks,
+        currentRotation: currentRotation,
+        selectedTaskName: selectedTask ? selectedTask.name : null
+      };
+      localStorage.setItem('jgaTasksState', JSON.stringify(state));
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem('jgaTasksState');
+      if (saved) {
+        const state = JSON.parse(saved);
+        remainingTasks = state.remainingTaskNames.map(name =>
+          tasks.find(t => t.name === name)
+        ).filter(t => t);
+        completedTasks = state.completedTaskNames;
+        currentRotation = state.currentRotation;
+        if (state.selectedTaskName) {
+          selectedTask = tasks.find(t => t.name === state.selectedTaskName);
+        }
+      }
+    }
+
+    function resetState() {
+      remainingTasks = [...tasks];
+      completedTasks = [];
+      currentRotation = 0;
+      selectedTask = null;
+      resultText.textContent = '';
+      completedText.textContent = '';
+      confirmBtn.classList.remove('show');
+      spinBtn.disabled = false;
+      localStorage.removeItem('jgaTasksState');
+      drawWheel();
+    }
+
+    // Canvas-Größe anpassen
+    function resizeCanvas() {
+      const size = Math.min(window.innerWidth - 40, 500);
+      canvas.width = size;
+      canvas.height = size;
+      drawWheel();
+    }
+
+    function drawWheel() {
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = Math.min(centerX, centerY) - 10;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const numSegments = remainingTasks.length;
+      if (numSegments === 0) return;
+
+      const anglePerSegment = (2 * Math.PI) / numSegments;
+
+      for (let i = 0; i < numSegments; i++) {
+        const startAngle = currentRotation + i * anglePerSegment;
+        const endAngle = currentRotation + (i + 1) * anglePerSegment;
+
+        // Segment zeichnen
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+        ctx.closePath();
+        ctx.fillStyle = remainingTasks[i].color;
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Text zeichnen
+        const textAngle = startAngle + anglePerSegment / 2;
+        const textX = centerX + Math.cos(textAngle) * (radius * 0.65);
+        const textY = centerY + Math.sin(textAngle) * (radius * 0.65);
+
+        ctx.save();
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 12px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        // Text umbrechen wenn nötig
+        const words = remainingTasks[i].name.split(' ');
+        const maxWordsPerLine = 2;
+        let line1 = '';
+        let line2 = '';
+        
+        for (let j = 0; j < words.length; j++) {
+          if (j < maxWordsPerLine) {
+            line1 += words[j] + ' ';
+          } else {
+            line2 += words[j] + ' ';
+          }
+        }
+        
+        if (line2) {
+          ctx.fillText(line1.trim(), textX, textY - 8);
+          ctx.fillText(line2.trim(), textX, textY + 8);
+        } else {
+          ctx.fillText(line1.trim(), textX, textY);
+        }
+        
+        ctx.restore();
+      }
+    }
+
+    function spin() {
+      if (isSpinning || remainingTasks.length === 0 || selectedTask !== null) return;
+
+      isSpinning = true;
+      spinBtn.disabled = true;
+      confirmBtn.classList.remove('show');
+      resultText.textContent = '';
+
+      // Zufällige Aufgabe
+      const randomIndex = Math.floor(Math.random() * remainingTasks.length);
+      const targetIndex = randomIndex;
+      const targetTask = remainingTasks[targetIndex];
+
+      const numSegments = remainingTasks.length;
+      const anglePerSegment = (2 * Math.PI) / numSegments;
+
+      // Berechne Zielwinkel: Die Mitte von Segment targetIndex sollte bei 3π/2 (oben) landen
+      let targetAngle = (3 * Math.PI / 2) - (targetIndex + 0.5) * anglePerSegment;
+      targetAngle = ((targetAngle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+
+      const spinDuration = 4000; // 4 Sekunden
+      const startTime = Date.now();
+      const startRotation = currentRotation;
+
+      // Mehrere volle Rotationen + Zielwinkel
+      let rotationDifference = targetAngle - startRotation;
+      if (rotationDifference < 0) {
+        rotationDifference += 2 * Math.PI;
+      }
+      const fullRotations = 5;
+      const totalRotation = Math.PI * 2 * fullRotations + rotationDifference;
+
+      function animateSpin() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / spinDuration, 1);
+
+        // Easing-Funktion (ease-out)
+        const easeProgress = 1 - Math.pow(1 - progress, 3);
+
+        currentRotation = startRotation + totalRotation * easeProgress;
+        drawWheel();
+
+        if (progress < 1) {
+          requestAnimationFrame(animateSpin);
+        } else {
+          // Normalisiere currentRotation auf [0, 2π)
+          currentRotation = ((currentRotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+          isSpinning = false;
+          selectedTask = targetTask;
+          showResult();
+          spinBtn.disabled = true;
+          saveState();
+        }
+      }
+
+      animateSpin();
+    }
+
+    function showResult() {
+      resultText.textContent = `🎯 ${selectedTask.name}`;
+      confirmBtn.classList.add('show');
+    }
+
+    function confirmTask() {
+      if (!selectedTask) return;
+
+      completedTasks.push(selectedTask.name);
+      remainingTasks = remainingTasks.filter(t => t.name !== selectedTask.name);
+      selectedTask = null;
+      confirmBtn.classList.remove('show');
+      resultText.textContent = '';
+
+      // Setze das Wheel auf eine zufällige Position
+      if (remainingTasks.length > 0) {
+        currentRotation = Math.random() * 2 * Math.PI;
+      }
+
+      updateCompleted();
+      drawWheel();
+      saveState();
+
+      if (remainingTasks.length > 0) {
+        spinBtn.disabled = false;
+      } else {
+        spinBtn.disabled = true;
+        spinBtn.textContent = '🎉 Alle Aufgaben erledigt!';
+      }
+    }
+
+    function updateCompleted() {
+      if (completedTasks.length > 0) {
+        completedText.textContent = `✅ Fertig: ${completedTasks.length} / ${tasks.length}`;
+      }
+    }
+
+    spinBtn.addEventListener('click', spin);
+    canvas.addEventListener('click', spin);
+    confirmBtn.addEventListener('click', confirmTask);
+    resetBtn.addEventListener('click', resetState);
+    window.addEventListener('resize', resizeCanvas);
+
+    // Initial setup
+    loadState();
+    resizeCanvas();
+    updateCompleted();
+
+    // Zeige das Ergebnis wenn es geladen wurde
+    if (selectedTask) {
+      resultText.textContent = `🎯 ${selectedTask.name}`;
+      confirmBtn.classList.add('show');
+      spinBtn.disabled = true;
+    }
+  </script>
+</body>
+
+</html>
