@@ -122,12 +122,6 @@
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
     }
 
-    .remaining {
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 0.95em;
-      margin-top: 10px;
-    }
-
     @keyframes slideIn {
       from {
         opacity: 0;
@@ -206,7 +200,6 @@
     const spinBtn = document.getElementById('spinBtn');
     const mapsBtn = document.getElementById('mapsBtn');
     const resultText = document.getElementById('resultText');
-    const remainingText = document.getElementById('remaining');
 
     // Canvas-Größe anpassen
     function resizeCanvas() {
@@ -359,7 +352,6 @@
 
     // Initial setup
     resizeCanvas();
-    updateRemaining();
   </script>
 </body>
 
