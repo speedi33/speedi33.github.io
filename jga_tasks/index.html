@@ -230,7 +230,7 @@
 
       <div class="button-group">
         <button id="spinBtn">SPIN!</button>
-        <button id="confirmBtn">✅ Erledigt!</button>
+        <button id="confirmBtn">✅ Erledigt und Foto/Video gemacht!</button>
       </div>
     </div>
   </div>
@@ -251,7 +251,17 @@
       { name: 'Singe mit jemand anderem im Duett', color: '#A8D8EA' }
     ];
 
+    // Gezinkte Reihenfolge - diese 5 Tasks müssen erfüllt werden
+    const spinOrder = [
+      'Singe ein Lied',
+      'Mach 10 Liegestütze',
+      'Tanze 30 Sekunden im Kreis',
+      'Mach 5 Kniebeugen',
+      'Erzähle einen Witz'
+    ];
+
     let remainingTasks = [...tasks];
+    let spinCount = 0;
     let isSpinning = false;
     let currentRotation = 0;
     let selectedTask = null;
@@ -271,7 +281,8 @@
         remainingTaskNames: remainingTasks.map(t => t.name),
         completedTaskNames: completedTasks,
         currentRotation: currentRotation,
-        selectedTaskName: selectedTask ? selectedTask.name : null
+        selectedTaskName: selectedTask ? selectedTask.name : null,
+        spinCount: spinCount
       };
       localStorage.setItem('jgaTasksState', JSON.stringify(state));
     }
@@ -285,6 +296,7 @@
         ).filter(t => t);
         completedTasks = state.completedTaskNames;
         currentRotation = state.currentRotation;
+        spinCount = state.spinCount;
         if (state.selectedTaskName) {
           selectedTask = tasks.find(t => t.name === state.selectedTaskName);
         }
@@ -295,6 +307,7 @@
       if (confirm('Möchtest du alle erledigten Aufgaben zurücksetzen?')) {
         remainingTasks = [...tasks];
         completedTasks = [];
+        spinCount = 0;
         currentRotation = 0;
         selectedTask = null;
         resultText.textContent = '';
@@ -353,8 +366,12 @@
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
+        // Überprüfe ob es eine erforderliche Task ist
+        const isRequired = spinOrder.includes(remainingTasks[i].name);
+        const displayName = isRequired ? '⭐ ' + remainingTasks[i].name : remainingTasks[i].name;
+
         // Text umbrechen wenn nötig
-        const words = remainingTasks[i].name.split(' ');
+        const words = displayName.split(' ');
         const maxWordsPerLine = 2;
         let line1 = '';
         let line2 = '';
@@ -386,10 +403,17 @@
       confirmBtn.classList.remove('show');
       resultText.textContent = '';
 
-      // Zufällige Aufgabe
-      const randomIndex = Math.floor(Math.random() * remainingTasks.length);
-      const targetIndex = randomIndex;
-      const targetTask = remainingTasks[targetIndex];
+      // Bestimmte Task für diesen Spin (Gezinkt!)
+      const targetTaskName = spinOrder[spinCount];
+      const targetIndex = remainingTasks.findIndex(t => t.name === targetTaskName);
+
+      if (targetIndex === -1) {
+        // Task wurde bereits entfernt - sollte nicht passieren, aber fallback
+        spinCount++;
+        isSpinning = false;
+        spinBtn.disabled = false;
+        return;
+      }
 
       const numSegments = remainingTasks.length;
       const anglePerSegment = (2 * Math.PI) / numSegments;
@@ -426,7 +450,8 @@
           // Normalisiere currentRotation auf [0, 2π)
           currentRotation = ((currentRotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
           isSpinning = false;
-          selectedTask = targetTask;
+          selectedTask = remainingTasks[targetIndex];
+          spinCount++;
           showResult();
           spinBtn.disabled = true;
           saveState();
@@ -468,28 +493,39 @@
     }
 
     function updateCompleted() {
-      if (completedTasks.length > 0) {
-        completedText.textContent = `✅ Fertig: ${completedTasks.length} / ${tasks.length}`;
+      // Zähle erfüllte erforderliche Tasks
+      const completedRequiredTasks = completedTasks.filter(taskName =>
+        spinOrder.includes(taskName)
+      ).length;
+
+      let text = `✅ Fertig: ${completedTasks.length} / ${tasks.length}`;
+
+      // Zeige erforderliche Tasks an
+      if (completedRequiredTasks < spinOrder.length) {
+        text += ` | ⭐ Pflicht: ${completedRequiredTasks} / ${spinOrder.length}`;
+
+        if (completedTasks.length > 0 || completedRequiredTasks > 0) {
+          completedText.textContent = text;
+        }
       }
-    }
 
-    spinBtn.addEventListener('click', spin);
-    canvas.addEventListener('click', spin);
-    confirmBtn.addEventListener('click', confirmTask);
-    resetBtn.addEventListener('click', resetAll);
-    window.addEventListener('resize', resizeCanvas);
+      spinBtn.addEventListener('click', spin);
+      canvas.addEventListener('click', spin);
+      confirmBtn.addEventListener('click', confirmTask);
+      resetBtn.addEventListener('click', resetAll);
+      window.addEventListener('resize', resizeCanvas);
 
-    // Initial setup
-    loadState();
-    resizeCanvas();
-    updateCompleted();
+      // Initial setup
+      loadState();
+      resizeCanvas();
+      updateCompleted();
 
-    // Zeige das Ergebnis wenn es geladen wurde
-    if (selectedTask) {
-      resultText.textContent = `🎯 ${selectedTask.name}`;
-      confirmBtn.classList.add('show');
-      spinBtn.disabled = true;
-    }
+      // Zeige das Ergebnis wenn es geladen wurde
+      if (selectedTask) {
+        resultText.textContent = `🎯 ${selectedTask.name}`;
+        confirmBtn.classList.add('show');
+        spinBtn.disabled = true;
+      }
   </script>
 </body>
 
