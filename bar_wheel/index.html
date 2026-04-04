@@ -122,10 +122,9 @@
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
     }
 
-    .home-btn {
+    .home-btn,
+    .reset-btn {
       position: fixed;
-      top: 20px;
-      left: 20px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border: none;
@@ -135,14 +134,33 @@
       cursor: pointer;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
       transition: all 0.3s ease;
-      text-decoration: none;
       display: inline-block;
       font-weight: bold;
     }
 
-    .home-btn:hover {
+    .home-btn {
+      top: 20px;
+      left: 20px;
+      text-decoration: none;
+    }
+
+    .reset-btn {
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+    }
+
+    .home-btn:hover,
+    .reset-btn:hover {
       transform: scale(1.05);
       box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .visited-list {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.95em;
+      margin-top: 15px;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
     }
 
     @keyframes slideIn {
@@ -178,12 +196,20 @@
         top: 15px;
         left: 15px;
       }
+
+      .reset-btn {
+        padding: 10px 15px;
+        font-size: 0.9em;
+        top: 15px;
+        right: 15px;
+      }
     }
   </style>
 </head>
 
 <body>
   <a href="../index.html" class="home-btn">← Home</a>
+  <button id="resetBtn" class="reset-btn">🔄 Reset</button>
   <div class="container">
     <h1>🎡 Bar Wheel</h1>
 
@@ -192,6 +218,7 @@
       <canvas id="wheelCanvas" width="500" height="500"></canvas>
 
       <div class="result-text" id="resultText"></div>
+      <div class="visited-list" id="visitedList"></div>
 
       <div class="button-group">
         <button id="spinBtn">SPIN!</button>
@@ -229,12 +256,60 @@
     let isSpinning = false;
     let currentRotation = 0;
     let selectedOption = null;
+    let visitedBars = [];
 
     const canvas = document.getElementById('wheelCanvas');
     const ctx = canvas.getContext('2d');
     const spinBtn = document.getElementById('spinBtn');
     const mapsBtn = document.getElementById('mapsBtn');
     const resultText = document.getElementById('resultText');
+    const resetBtn = document.getElementById('resetBtn');
+    const visitedList = document.getElementById('visitedList');
+
+    // LocalStorage Funktionen
+    function saveState() {
+      const state = {
+        remainingBarNames: remainingOptions.map(b => b.name),
+        visitedBarNames: visitedBars,
+        currentRotation: currentRotation,
+        selectedBarName: selectedOption ? selectedOption.name : null,
+        spinCount: spinCount
+      };
+      localStorage.setItem('barWheelState', JSON.stringify(state));
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem('barWheelState');
+      if (saved) {
+        const state = JSON.parse(saved);
+        remainingOptions = state.remainingBarNames.map(name =>
+          options.find(b => b.name === name)
+        ).filter(b => b);
+        visitedBars = state.visitedBarNames;
+        currentRotation = state.currentRotation;
+        spinCount = state.spinCount;
+        if (state.selectedBarName) {
+          selectedOption = options.find(b => b.name === state.selectedBarName);
+        }
+      }
+    }
+
+    function resetAll() {
+      if (confirm('Möchtest du alle besuchten Bars zurücksetzen?')) {
+        remainingOptions = [...options];
+        visitedBars = [];
+        spinCount = 0;
+        currentRotation = 0;
+        selectedOption = null;
+        resultText.textContent = '';
+        mapsBtn.classList.remove('show');
+        spinBtn.disabled = false;
+        spinBtn.textContent = 'SPIN!';
+        saveState();
+        updateVisitedList();
+        drawWheel();
+      }
+    }
 
     // Canvas-Größe anpassen
     function resizeCanvas() {
@@ -348,6 +423,7 @@
           spinCount++;
           showResult();
           spinBtn.disabled = true;
+          saveState();
         }
       }
 
@@ -366,6 +442,7 @@
       window.open(`https://maps.app.goo.gl/${selectedOption.mapsLink}`, '_blank');
 
       // Option entfernen
+      visitedBars.push(selectedOption.name);
       remainingOptions = remainingOptions.filter(opt => opt.name !== selectedOption.name);
       selectedOption = null;
       mapsBtn.classList.remove('show');
@@ -377,6 +454,8 @@
       }
 
       drawWheel();
+      updateVisitedList();
+      saveState();
 
       if (remainingOptions.length > 0) {
         spinBtn.disabled = false;
@@ -386,13 +465,31 @@
       }
     }
 
+    function updateVisitedList() {
+      if (visitedBars.length > 0) {
+        visitedList.textContent = `✅ Besucht: ${visitedBars.length} / ${options.length}`;
+      } else {
+        visitedList.textContent = '';
+      }
+    }
+
     spinBtn.addEventListener('click', spin);
     canvas.addEventListener('click', spin);
     mapsBtn.addEventListener('click', navigateToMaps);
+    resetBtn.addEventListener('click', resetAll);
     window.addEventListener('resize', resizeCanvas);
 
     // Initial setup
+    loadState();
     resizeCanvas();
+    updateVisitedList();
+
+    // Zeige das Ergebnis wenn es geladen wurde
+    if (selectedOption) {
+      resultText.textContent = `🎉 ${selectedOption.name}!`;
+      mapsBtn.classList.add('show');
+      spinBtn.disabled = true;
+    }
   </script>
 </body>
 
