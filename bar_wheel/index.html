@@ -165,7 +165,6 @@
       <div class="button-group">
         <button id="spinBtn">SPIN!</button>
         <button id="mapsBtn">📍 Navigieren</button>
-        <button id="resetBtn">🔄 Reset</button>
       </div>
     </div>
   </div>
@@ -200,46 +199,7 @@
     const ctx = canvas.getContext('2d');
     const spinBtn = document.getElementById('spinBtn');
     const mapsBtn = document.getElementById('mapsBtn');
-    const resetBtn = document.getElementById('resetBtn');
     const resultText = document.getElementById('resultText');
-
-    // LocalStorage Funktionen
-    function saveState() {
-      const state = {
-        spinCount: spinCount,
-        remainingOptionNames: remainingOptions.map(opt => opt.name),
-        currentRotation: currentRotation,
-        selectedOptionName: selectedOption ? selectedOption.name : null
-      };
-      localStorage.setItem('barWheelState', JSON.stringify(state));
-    }
-
-    function loadState() {
-      const saved = localStorage.getItem('barWheelState');
-      if (saved) {
-        const state = JSON.parse(saved);
-        spinCount = state.spinCount;
-        remainingOptions = state.remainingOptionNames.map(name =>
-          options.find(opt => opt.name === name)
-        );
-        currentRotation = state.currentRotation;
-        if (state.selectedOptionName) {
-          selectedOption = options.find(opt => opt.name === state.selectedOptionName);
-        }
-      }
-    }
-
-    function resetState() {
-      spinCount = 0;
-      remainingOptions = [...options];
-      currentRotation = 0;
-      selectedOption = null;
-      resultText.textContent = '';
-      mapsBtn.classList.remove('show');
-      spinBtn.disabled = false;
-      localStorage.removeItem('barWheelState');
-      drawWheel();
-    }
 
     // Canvas-Größe anpassen
     function resizeCanvas() {
@@ -351,7 +311,6 @@
           isSpinning = false;
           selectedOption = remainingOptions[targetIndex];
           spinCount++;
-          saveState();
           showResult();
           spinBtn.disabled = true;
         }
@@ -383,7 +342,6 @@
       }
 
       drawWheel();
-      saveState();
 
       if (remainingOptions.length > 0) {
         spinBtn.disabled = false;
@@ -396,21 +354,10 @@
     spinBtn.addEventListener('click', spin);
     canvas.addEventListener('click', spin);
     mapsBtn.addEventListener('click', navigateToMaps);
-    resetBtn.addEventListener('click', resetState);
-
-    // Lade den gespeicherten Stand beim Laden der Seite
-    loadState();
     window.addEventListener('resize', resizeCanvas);
 
     // Initial setup
     resizeCanvas();
-
-    // Zeige das Ergebnis wenn es geladen wurde
-    if (selectedOption) {
-      resultText.textContent = `🎉 ${selectedOption.name}!`;
-      mapsBtn.classList.add('show');
-      spinBtn.disabled = true;
-    }
   </script>
 </body>
 
