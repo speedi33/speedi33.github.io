@@ -171,12 +171,12 @@
 
   <script>
     const options = [
-      { name: 'Eisgrub-Bräu', mapsLink: 'https://maps.app.goo.gl/ahsr67odEcxjjAiz9', color: '#FFB347' },
-      { name: 'Spiritus', mapsLink: 'https://maps.app.goo.gl/rvWHxPNoXRfjz54m7', color: '#FF6B6B' },
-      { name: 'The Porter House', mapsLink: 'https://maps.app.goo.gl/1DznhjNyazncjhk58', color: '#8B4513' },
-      { name: 'Waschmaschinensalon', mapsLink: 'https://maps.app.goo.gl/oy1sWfTtDwink26G6', color: '#4ECDC4' },
-      { name: 'Sixties', mapsLink: 'https://maps.app.goo.gl/oz7CKt13LzcnzuhFA', color: '#95E1D3' },
-      { name: 'Onkel Willis Pub', mapsLink: 'https://maps.app.goo.gl/hA6jHvimxHs3Ge4c6', color: '#F38181' }
+      { name: 'Eisgrub-Bräu', mapsLink: 'ahsr67odEcxjjAiz9', color: '#FFB347' },
+      { name: 'Spiritus', mapsLink: 'rvWHxPNoXRfjz54m7', color: '#FF6B6B' },
+      { name: 'The Porter House', mapsLink: '1DznhjNyazncjhk58', color: '#8B4513' },
+      { name: 'Waschmaschinensalon', mapsLink: 'oy1sWfTtDwink26G6', color: '#4ECDC4' },
+      { name: 'Sixties', mapsLink: 'oz7CKt13LzcnzuhFA', color: '#95E1D3' },
+      { name: 'Onkel Willis Pub', mapsLink: 'hA6jHvimxHs3Ge4c6', color: '#F38181' }
     ];
 
     // Gezinkte Reihenfolge der Spins
@@ -327,7 +327,8 @@
     function navigateToMaps() {
       if (!selectedOption) return;
 
-      window.open(selectedOption.mapsLink, '_blank');
+      // window.open(`https://www.google.com/maps/search/${query}`, '_blank');
+      window.open(`https://maps.app.goo.gl/${selectedOption.mapsLink}`, '_blank');
 
       // Option entfernen
       remainingOptions = remainingOptions.filter(opt => opt.name !== selectedOption.name);
