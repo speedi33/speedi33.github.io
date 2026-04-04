@@ -223,21 +223,18 @@
       const radius = Math.min(centerX, centerY) - 10;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.save();
-      ctx.translate(centerX, centerY);
-      ctx.rotate(currentRotation);
 
       const numSegments = remainingOptions.length;
       const anglePerSegment = (2 * Math.PI) / numSegments;
 
       for (let i = 0; i < numSegments; i++) {
-        // Segment zeichnen
-        const startAngle = i * anglePerSegment;
-        const endAngle = (i + 1) * anglePerSegment;
+        const startAngle = currentRotation + i * anglePerSegment;
+        const endAngle = currentRotation + (i + 1) * anglePerSegment;
 
+        // Segment zeichnen
         ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.arc(0, 0, radius, startAngle, endAngle);
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
         ctx.closePath();
         ctx.fillStyle = remainingOptions[i].color;
         ctx.fill();
@@ -247,22 +244,17 @@
 
         // Text zeichnen
         const textAngle = startAngle + anglePerSegment / 2;
+        const textX = centerX + Math.cos(textAngle) * (radius * 0.65);
+        const textY = centerY + Math.sin(textAngle) * (radius * 0.65);
+
         ctx.save();
-        ctx.rotate(textAngle);
-        ctx.translate(radius * 0.65, 0);
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 14px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-
-        // Text umbrechen wenn nötig
-        const maxWidth = radius * 0.4;
-        ctx.fillText(remainingOptions[i].name, 0, 0);
-
+        ctx.fillText(remainingOptions[i].name, textX, textY);
         ctx.restore();
       }
-
-      ctx.restore();
     }
 
     function spin() {
@@ -289,12 +281,13 @@
       const anglePerSegment = (2 * Math.PI) / numSegments;
 
       // Berechne Zielwinkel für die Option
-      // Die Pointer zeigt nach oben (π/2), also muss das Segment dort landen
-      const segmentPosition = anglePerSegment * targetIndex + anglePerSegment / 2;
-      const targetAngle = Math.PI / 2 - segmentPosition;
+      // Die Pointer zeigt nach oben, also rückwärts rechnen
+      const segmentPosition = anglePerSegment * targetIndex;
+      const targetAngle = -segmentPosition - anglePerSegment / 2;
 
       // Mehrere volle Rotationen + Zielwinkel
-      const totalRotation = Math.PI * 2 * 5 + targetAngle;
+      const fullRotations = 5;
+      const totalRotation = Math.PI * 2 * fullRotations + targetAngle;
       const spinDuration = 4000; // 4 Sekunden
       const startTime = Date.now();
       const startRotation = currentRotation;
@@ -316,7 +309,7 @@
           selectedOption = remainingOptions[targetIndex];
           spinCount++;
           showResult();
-          spinBtn.disabled = remainingOptions.length === 1;
+          spinBtn.disabled = false;
         }
       }
 
