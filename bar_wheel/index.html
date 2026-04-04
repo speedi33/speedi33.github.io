@@ -288,9 +288,10 @@
       const numSegments = remainingOptions.length;
       const anglePerSegment = (2 * Math.PI) / numSegments;
 
-      // Berechne Zielwinkel für die Option (unten/oben je nach Position)
-      // Die Pointer zeigt nach oben (0), also berechnen wir, wie viel wir drehen müssen
-      const targetAngle = anglePerSegment * targetIndex + anglePerSegment / 2;
+      // Berechne Zielwinkel für die Option
+      // Die Pointer zeigt nach oben (π/2), also muss das Segment dort landen
+      const segmentPosition = anglePerSegment * targetIndex + anglePerSegment / 2;
+      const targetAngle = Math.PI / 2 - segmentPosition;
 
       // Mehrere volle Rotationen + Zielwinkel
       const totalRotation = Math.PI * 2 * 5 + targetAngle;
