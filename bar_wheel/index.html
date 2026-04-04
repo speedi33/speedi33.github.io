@@ -287,6 +287,10 @@
       // Normalisiere targetAngle auf [0, 2π)
       targetAngle = ((targetAngle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
 
+      const spinDuration = 4000; // 4 Sekunden
+      const startTime = Date.now();
+      const startRotation = currentRotation;
+
       // Mehrere volle Rotationen + Zielwinkel
       // Berechne die Rotationsdifferenz, stelle sicher dass wir in die richtige Richtung drehen
       let rotationDifference = targetAngle - startRotation;
@@ -295,9 +299,6 @@
       }
       const fullRotations = 5;
       const totalRotation = Math.PI * 2 * fullRotations + rotationDifference;
-      const spinDuration = 4000; // 4 Sekunden
-      const startTime = Date.now();
-      const startRotation = currentRotation;
 
       function animateSpin() {
         const elapsed = Date.now() - startTime;
