@@ -289,8 +289,13 @@
       targetAngle = ((targetAngle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
 
       // Mehrere volle Rotationen + Zielwinkel
+      // Berechne die Rotationsdifferenz, stelle sicher dass wir in die richtige Richtung drehen
+      let rotationDifference = targetAngle - startRotation;
+      if (rotationDifference < 0) {
+        rotationDifference += 2 * Math.PI;
+      }
       const fullRotations = 5;
-      const totalRotation = Math.PI * 2 * fullRotations + (targetAngle - currentRotation);
+      const totalRotation = Math.PI * 2 * fullRotations + rotationDifference;
       const spinDuration = 4000; // 4 Sekunden
       const startTime = Date.now();
       const startRotation = currentRotation;
@@ -314,7 +319,7 @@
           selectedOption = remainingOptions[targetIndex];
           spinCount++;
           showResult();
-          spinBtn.disabled = false;
+          spinBtn.disabled = true;
         }
       }
 
