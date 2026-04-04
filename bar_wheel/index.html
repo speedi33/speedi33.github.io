@@ -281,13 +281,14 @@
       const anglePerSegment = (2 * Math.PI) / numSegments;
 
       // Berechne Zielwinkel für die Option
-      // Die Pointer zeigt nach oben, also rückwärts rechnen
-      const segmentPosition = anglePerSegment * targetIndex;
-      const targetAngle = -segmentPosition - anglePerSegment / 2;
+      // Die Pointer zeigt nach oben (π/2)
+      // Das Segment targetIndex sollte bei der Pointer landen
+      // Also: currentRotation + targetIndex * anglePerSegment = π/2
+      const targetAngle = Math.PI / 2 - targetIndex * anglePerSegment;
 
       // Mehrere volle Rotationen + Zielwinkel
       const fullRotations = 5;
-      const totalRotation = Math.PI * 2 * fullRotations + targetAngle;
+      const totalRotation = Math.PI * 2 * fullRotations + (targetAngle - currentRotation);
       const spinDuration = 4000; // 4 Sekunden
       const startTime = Date.now();
       const startRotation = currentRotation;
