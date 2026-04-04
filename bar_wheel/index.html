@@ -327,7 +327,7 @@
     function navigateToMaps() {
       if (!selectedOption) return;
 
-      window.open(encodeURIComponent(selectedOption.mapsLink), '_blank');
+      window.open(selectedOption.mapsLink, '_blank');
 
       // Option entfernen
       remainingOptions = remainingOptions.filter(opt => opt.name !== selectedOption.name);
