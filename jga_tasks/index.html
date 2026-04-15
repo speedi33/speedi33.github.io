@@ -126,6 +126,18 @@
       margin-right: auto;
     }
 
+    .description-text {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.1em;
+      margin-top: 10px;
+      font-weight: normal;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      min-height: 20px;
+    }
+
     .completed {
       color: rgba(255, 255, 255, 0.7);
       font-size: 0.95em;
@@ -226,6 +238,7 @@
       <canvas id="wheelCanvas" width="500" height="500"></canvas>
 
       <div class="result-text" id="resultText"></div>
+      <div class="description-text" id="descriptionText"></div>
 
       <div class="button-group">
         <button id="spinBtn">SPIN!</button>
@@ -236,18 +249,17 @@
 
   <script>
     const tasks = [
-      { name: 'SHOT RUNDE', color: '#FF6B6B' },
-      { name: 'Mach 10 Liegestütze', color: '#FFB347' },
-      { name: 'Umarme einen Fremden', color: '#4ECDC4' },
-      { name: 'SHOT RUNDE', color: '#95E1D3' },
-      { name: 'Sag 3 Komplimente', color: '#F38181' },
-      { name: 'Mach einen Handstand', color: '#AA96DA' },
-      { name: 'Lauf rückwärts 20 Meter', color: '#FCBAD3' },
-      { name: 'SHOT RUNDE', color: '#A8E6CF' },
-      { name: 'Mach 5 Kniebeugen', color: '#FFD3B6' },
-      { name: 'Erzähle einen Witz', color: '#FFAAA5' },
-      { name: 'Auf einer Bank balancieren', color: '#FF8B94' },
-      { name: 'SHOT RUNDE', color: '#A8D8EA' }
+      { name: 'SHOT', color: '#FF6B6B', description: 'Einen Schnaps trinken!' },
+      { name: 'Back Walker', color: '#FFB347', description: '2 Minuten rückwärts laufen' },
+      { name: 'Lucky Boi', color: '#4ECDC4', description: 'Einer fremden Person erzählen, wie geil heiraten ist' },
+      { name: 'SHOT', color: '#95E1D3', description: 'Einen Schnaps trinken!' },
+      { name: 'Naive Surprise', color: '#F38181', description: 'Von fremder Person das nächste Getränk aussuchen lassen' },
+      { name: 'Love-drunken Poet', color: '#AA96DA', description: 'Gedicht über Rebekka auf Bierdeckel verfassen und vortragen' },
+      { name: 'Sporty Dude', color: '#FCBAD3', description: 'An jeder Kreuzung eine sportliche Übung machen (10 Liegestütze, 10 Kniebeugen, 10 Hampelmänner)' },
+      { name: 'SHOT', color: '#A8E6CF', description: 'Einen Schnaps trinken!' },
+      { name: 'Medieval Drinker', color: '#FFD3B6', description: 'Navigiere uns zur nächsten Bar ohne Hilfsmittel in X Minuten' },
+      { name: 'Treasure Seeker', color: '#FFAAA5', description: 'Älteres Ehepaar nach Rat fragen, was das Geheimnis einer langen Ehe ist' },
+      { name: 'SHOT', color: '#A8D8EA', description: 'Einen Schnaps trinken!' }
     ];
 
     let remainingTasks = [...tasks];
@@ -261,6 +273,7 @@
     const spinBtn = document.getElementById('spinBtn');
     const confirmBtn = document.getElementById('confirmBtn');
     const resultText = document.getElementById('resultText');
+    const descriptionText = document.getElementById('descriptionText');
     const resetBtn = document.getElementById('resetBtn');
 
     // LocalStorage Funktionen
@@ -296,6 +309,7 @@
         currentRotation = 0;
         selectedTask = null;
         resultText.textContent = '';
+        descriptionText.textContent = '';
         confirmBtn.classList.remove('show');
         spinBtn.disabled = false;
         spinBtn.textContent = 'SPIN!';
@@ -434,6 +448,7 @@
 
     function showResult() {
       resultText.textContent = `🎯 ${selectedTask.name}`;
+      descriptionText.textContent = selectedTask.description || '';
       confirmBtn.classList.add('show');
     }
 
@@ -442,14 +457,15 @@
 
       completedTasks.push(selectedTask.name);
 
-      // "SHOT RUNDE" Tasks werden NICHT entfernt, andere schon
-      if (selectedTask.name !== 'SHOT RUNDE') {
+      // "SHOT" Tasks werden NICHT entfernt, andere schon
+      if (selectedTask.name !== 'SHOT') {
         remainingTasks = remainingTasks.filter(t => t.name !== selectedTask.name);
       }
 
       selectedTask = null;
       confirmBtn.classList.remove('show');
       resultText.textContent = '';
+      descriptionText.textContent = '';
 
       // Setze das Wheel auf eine zufällige Position
       if (remainingTasks.length > 0) {
@@ -480,6 +496,7 @@
     // Zeige das Ergebnis wenn es geladen wurde
     if (selectedTask) {
       resultText.textContent = `🎯 ${selectedTask.name}`;
+      descriptionText.textContent = selectedTask.description || '';
       confirmBtn.classList.add('show');
       spinBtn.disabled = true;
     }
