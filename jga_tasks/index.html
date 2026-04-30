@@ -452,6 +452,8 @@
       if (!selectedTask) return;
 
       completedTasks.push(selectedTask.name);
+      // Entferne die erledigte Aufgabe aus dem Wheel
+      remainingTasks = remainingTasks.filter(t => t.name !== selectedTask.name);
 
       selectedTask = null;
       confirmBtn.classList.remove('show');
