@@ -453,11 +453,6 @@
 
       completedTasks.push(selectedTask.name);
 
-      // "SHOT" Tasks werden NICHT entfernt, andere schon
-      if (selectedTask.name !== 'SHOT') {
-        remainingTasks = remainingTasks.filter(t => t.name !== selectedTask.name);
-      }
-
       selectedTask = null;
       confirmBtn.classList.remove('show');
       resultText.textContent = '';
