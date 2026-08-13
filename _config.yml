@@ -1,10 +1,4 @@
 # GitHub Pages Configuration
-theme: jekyll-theme-minimal
-title: Bar Wheel
-description: Ein interaktives Spinning Wheel zur Barauswahl
+title: speedi33 – Meine Projekte
+description: Übersicht über meine Projekte, gehostet mit GitHub Pages
 show_downloads: false
-
-# Build settings
-markdown: GFM
-plugins:
-  - jekyll-feed

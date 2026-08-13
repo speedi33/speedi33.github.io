@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hövel JGA</title>
+  <title>Speedi33 – Meine Projekte</title>
   <style>
     * {
       margin: 0;
@@ -12,262 +12,158 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --bg: #0f1117;
+      --card: #1a1d26;
+      --card-hover: #212533;
+      --text: #e8eaf0;
+      --muted: #9aa0ae;
+      --accent: #667eea;
+    }
+
     body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 20% -10%, #1c2340 0%, var(--bg) 55%);
       min-height: 100vh;
+      color: var(--text);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 20px;
-      overflow-x: hidden;
+      padding: 60px 20px 40px;
     }
 
     .container {
-      max-width: 1000px;
+      max-width: 900px;
       width: 100%;
+    }
+
+    header {
       text-align: center;
+      margin-bottom: 48px;
     }
 
-    h1 {
-      color: white;
-      font-size: 3em;
-      margin-bottom: 20px;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    header .avatar {
+      font-size: 3.4em;
+      line-height: 1;
+      margin-bottom: 14px;
     }
 
-    .subtitle {
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 1.2em;
-      margin-bottom: 40px;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    header h1 {
+      font-size: 2.2em;
+      letter-spacing: -0.5px;
     }
 
-    .tutorial-section {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 15px;
-      padding: 35px;
-      margin-bottom: 40px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      text-align: left;
+    header p {
+      color: var(--muted);
+      margin-top: 8px;
+      font-size: 1.05em;
     }
 
-    .tutorial-section h2 {
-      font-size: 2em;
-      color: #333;
-      margin-bottom: 25px;
-      text-align: center;
-    }
-
-    .tutorial-steps {
+    .grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      margin-bottom: 25px;
-    }
-
-    .step {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-      padding: 25px;
-      background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
-      border-radius: 10px;
-      border-left: 5px solid #667eea;
-    }
-
-    .step.second {
-      border-left-color: #f5576c;
-    }
-
-    .step-number {
-      font-size: 2.5em;
-      font-weight: bold;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      width: 65px;
-      height: 65px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .step.second .step-number {
-      background: linear-gradient(135deg, #f5576c 0%, #ee5a6f 100%);
-    }
-
-    .step-title {
-      font-size: 1.3em;
-      font-weight: bold;
-      color: #333;
-    }
-
-    .step-description {
-      color: #666;
-      font-size: 0.95em;
-      line-height: 1.6;
-      text-align: center;
-    }
-
-    .tutorial-note {
-      background: #fff3cd;
-      border-left: 4px solid #ffc107;
-      padding: 18px;
-      border-radius: 5px;
-      color: #856404;
-      margin-top: 20px;
-      text-align: center;
-      font-weight: 500;
-    }
-
-    .cards-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      margin-bottom: 30px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 15px;
-      padding: 40px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-      cursor: pointer;
+      position: relative;
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 26px;
       text-decoration: none;
+      color: var(--text);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 15px;
-      position: relative;
+      gap: 12px;
     }
 
     .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+      transform: translateY(-4px);
+      background: var(--card-hover);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
     }
 
-    .card-order {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
+    .card .emoji {
+      font-size: 2.6em;
+      line-height: 1;
+    }
+
+    .card h2 {
+      font-size: 1.35em;
+      font-weight: 700;
+    }
+
+    .card .description {
+      color: var(--muted);
+      font-size: 0.95em;
+      line-height: 1.55;
+      flex-grow: 1;
+    }
+
+    .card .tags {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 1.3em;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
-    .card.bar-wheel .card-order {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .card .tag {
+      font-size: 0.78em;
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(102, 126, 234, 0.12);
+      padding: 4px 10px;
+      border-radius: 999px;
     }
 
-    .card.jga-tasks .card-order {
-      background: linear-gradient(135deg, #f5576c 0%, #ee5a6f 100%);
+    .card .links {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
     }
 
-    .card-emoji {
-      font-size: 3em;
-      margin-top: 10px;
-    }
-
-    .card-title {
-      font-size: 1.8em;
-      color: #333;
-      font-weight: bold;
-    }
-
-    .card-description {
-      color: #666;
-      font-size: 0.95em;
-      line-height: 1.5;
-    }
-
-    .card.jga-tasks {
-      border-top: 5px solid #f5576c;
-    }
-
-    .card.bar-wheel {
-      border-top: 5px solid #667eea;
-    }
-
-    .tutorial-section.hidden {
-      display: none;
-    }
-
-    .tutorial-toggle-btn {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      padding: 12px 25px;
+    .card .link {
+      font-size: 0.85em;
+      font-weight: 600;
+      padding: 8px 14px;
       border-radius: 8px;
-      font-size: 0.95em;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-      margin-bottom: 40px;
+      text-decoration: none;
+      transition: background 0.2s ease;
     }
 
-    .tutorial-toggle-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    .card .link.primary {
+      background: var(--accent);
+      color: #fff;
     }
 
-    .info-text {
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 10px;
-      padding: 22px;
-      color: #333;
-      margin-top: 30px;
-      font-size: 1.05em;
-      line-height: 1.7;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    .card .link.primary:hover {
+      background: #5369d8;
     }
 
-    @media (max-width: 768px) {
-      .cards-container {
-        grid-template-columns: 1fr;
-        gap: 20px;
+    .card .link.secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+    }
+
+    .card .link.secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    footer {
+      margin-top: 48px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85em;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 40px 16px 24px;
       }
 
-      .tutorial-steps {
-        grid-template-columns: 1fr;
-        gap: 20px;
-      }
-
-      h1 {
-        font-size: 2em;
-      }
-
-      .card {
-        padding: 30px;
-      }
-
-      .card-emoji {
-        font-size: 2.5em;
-      }
-
-      .card-title {
-        font-size: 1.5em;
-      }
-
-      .tutorial-section {
-        padding: 25px;
-      }
-
-      .tutorial-section h2 {
-        font-size: 1.5em;
+      header h1 {
+        font-size: 1.7em;
       }
     }
   </style>
@@ -275,100 +171,84 @@
 
 <body>
   <div class="container">
-    <h1>🎉 Hövel JGA</h1>
-    <p class="subtitle">Eine unvergessliche Nacht wartet auf dich!</p>
+    <header>
+      <div class="avatar">👨‍💻</div>
+      <h1>Meine Projekte</h1>
+      <p>Eine Auswahl meiner Projekte – viel Spaß beim Stöbern!</p>
+    </header>
 
-    <!-- Tutorial Section -->
-    <div id="tutorialSection" class="tutorial-section">
-      <h2>🎯 Wie funktioniert der JGA-Ablauf?</h2>
+    <main class="grid" id="projectGrid"></main>
 
-      <div class="tutorial-steps">
-        <div class="step">
-          <div class="step-number">1️⃣</div>
-          <div class="step-title">Bar Wheel drehen</div>
-          <div class="step-description">
-            Starte mit dem <strong>Bar Wheel</strong>. Es bestimmt, welche <strong>Bar euer nächstes Ziel</strong> ist.
-            Danach geht ihr hin! 🍻
-          </div>
-        </div>
-
-        <div class="step second">
-          <div class="step-number">2️⃣</div>
-          <div class="step-title">Task Wheel drehen</div>
-          <div class="step-description">
-            Danach drückst du das <strong>Task Wheel</strong>. Es zeigt deine Aufgabe, die du <strong>bis zur nächsten
-              Bar</strong> erfüllen musst. Mit Foto oder Video bestätigen! 📸
-          </div>
-        </div>
-      </div>
-
-      <div class="tutorial-note">
-        🚨 <strong>Wichtig der Ablauf:</strong> Erst <strong>Bar Wheel</strong> (wohin?) → dann <strong>Task
-          Wheel</strong> (was tun?) → dann los zur Bar und Aufgabe erfüllen → Foto/Video als Beweis → dann wiederholt
-        sich alles!
-      </div>
-    </div>
-
-    <button id="tutorialToggleBtn" class="tutorial-toggle-btn">📖 Tutorial anzeigen</button>
-
-    <!-- Action Cards -->
-    <div class="cards-container">
-      <a href="bar_wheel/index.html" class="card bar-wheel">
-        <div class="card-order">1️⃣</div>
-        <div class="card-emoji">🎡</div>
-        <div class="card-title">Bar Wheel</div>
-        <div class="card-description"><strong>Immer zuerst!</strong> Bestimme die nächste Bar</div>
-      </a>
-
-      <a href="jga_tasks/index.html" class="card jga-tasks">
-        <div class="card-order">2️⃣</div>
-        <div class="card-emoji">🎯</div>
-        <div class="card-title">Task Wheel</div>
-        <div class="card-description"><strong>Dann danach!</strong> Welche Herausforderung wartet?</div>
-      </a>
-    </div>
-
-    <div class="info-text">
-      💪 <strong>Deine Mission:</strong> Erfülle Aufgaben, besuche Bars und dokumentiere alles mit Fotos oder Videos.
-      Das wird eine legendäre Nacht! 🎉🍻
-    </div>
+    <footer>
+      © <span id="year"></span> speedi33 · Diese Seite wird mit GitHub Pages gehostet
+    </footer>
   </div>
 
   <script>
-    // Tutorial Visibility Management
-    const tutorialSection = document.getElementById('tutorialSection');
-    const tutorialToggleBtn = document.getElementById('tutorialToggleBtn');
-    const TUTORIAL_KEY = 'jgaTutorialSeen';
+    // Zentral gepflegte Links – hier einfach die URLs anpassen.
+    const LINKS = {
+      hoevelJga: 'https://speedi33.github.io/hoevel-jga/',
+      hoevelJgaGithub: 'https://github.com/speedi33/hoevel-jga',
+      foodReminder: 'https://github.com/speedi33/FoodReminder',
+    };
 
-    function initTutorial() {
-      const tutorialSeen = localStorage.getItem(TUTORIAL_KEY);
+    // Neue Projekte einfach hier hinzufügen.
+    const PROJECTS = [
+      {
+        emoji: '🎉',
+        title: 'Hövel JGA',
+        description:
+          'Web-App für einen legendären Junggesellenabschied: Bar Wheel für die nächste Bar und Task Wheel mit Challenges.',
+        tags: ['HTML', 'CSS', 'JS'],
+        url: LINKS.hoevelJga,
+        github: LINKS.hoevelJgaGithub,
+      },
+      {
+        emoji: '🥕',
+        title: 'FoodReminder',
+        description:
+          'App für iOS, Android und Web, die Lebensmittel und Kassenbons erfasst und rechtzeitig an das Mindesthaltbarkeitsdatum erinnert.',
+        tags: ['React Native', 'Expo', 'TypeScript'],
+        url: LINKS.foodReminder,
+        github: LINKS.foodReminder,
+      },
+    ];
 
-      if (tutorialSeen) {
-        // Tutorial wurde bereits gesehen, verstecken
-        tutorialSection.classList.add('hidden');
-        tutorialToggleBtn.textContent = '📖 Tutorial anzeigen';
-      } else {
-        // Erstes Mal - Tutorial anzeigen und speichern
-        tutorialSection.classList.remove('hidden');
-        tutorialToggleBtn.textContent = '📖 Tutorial verstecken';
-        localStorage.setItem(TUTORIAL_KEY, 'true');
+    const grid = document.getElementById('projectGrid');
+
+    for (const project of PROJECTS) {
+      const card = document.createElement('a');
+      card.className = 'card';
+      card.href = project.url;
+      card.target = '_blank';
+      card.rel = 'noopener noreferrer';
+
+      const tags = project.tags
+        .map((tag) => `<span class="tag">${tag}</span>`)
+        .join('');
+
+      const links = [];
+      if (project.url) {
+        links.push(
+          `<span class="link primary">Öffnen</span>`
+        );
       }
+      if (project.github && project.github !== project.url) {
+        links.push(`<a class="link secondary" href="${project.github}" target="_blank" rel="noopener noreferrer">GitHub</a>`);
+      }
+
+      card.innerHTML = `
+        <div class="emoji">${project.emoji}</div>
+        <h2>${project.title}</h2>
+        <p class="description">${project.description}</p>
+        <div class="tags">${tags}</div>
+        <div class="links">${links.join('')}</div>
+      `;
+
+      grid.appendChild(card);
     }
 
-    function toggleTutorial() {
-      tutorialSection.classList.toggle('hidden');
-
-      if (tutorialSection.classList.contains('hidden')) {
-        tutorialToggleBtn.textContent = '📖 Tutorial anzeigen';
-      } else {
-        tutorialToggleBtn.textContent = '📖 Tutorial verstecken';
-      }
-    }
-
-    tutorialToggleBtn.addEventListener('click', toggleTutorial);
-
-    // Initialize on page load
-    window.addEventListener('DOMContentLoaded', initTutorial);
+    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
 
