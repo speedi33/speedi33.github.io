@@ -6,5 +6,5 @@ Startseite mit einer einfachen Auswahl meiner Projekte. Neue Projekte lassen sic
 
 ## Projekte
 
-- **Hövel JGA** – eigenes Repo mit GitHub Pages: https://github.com/speedi33/hoevel-jga
+- **JGA** – eigenes Repo mit GitHub Pages: https://github.com/speedi33/jga
 - **FoodReminder** – Expo/React-Native-App: https://github.com/speedi33/FoodReminder
