@@ -9,7 +9,7 @@
       "fontFamilyFallback": [
         "Pacifico"
       ],
-      "fontSize": 36,
+      "fontSize": 30,
       "fontWeight": "w400",
       "inherit": false,
       "letterSpacing": 0,
@@ -190,7 +190,7 @@
     "isCollapsed": false,
     "isDense": false
   },
-  "materialTapTargetSize": "shrinkWrap",
+  "materialTapTargetSize": "padded",
   "platform": "macOS",
   "primaryColor": "#ffdb3e03",
   "primaryColorDark": "#ff010000",
@@ -310,41 +310,6 @@
   "shadowColor": "#ff000000",
   "splashColor": "#66c8c8c8",
   "splashFactory": "ripple",
-  "switchTheme": {
-    "thumbColor": {
-      "disabled": "#ffbdbdbd",
-      "dragged": "#ff000000",
-      "empty": "#ff000000",
-      "error": "#ff000000",
-      "focused": "#ff000000",
-      "hovered": "#ff000000",
-      "pressed": "#ff000000",
-      "scrolledUnder": "#ff000000",
-      "selected": "#ff000000"
-    },
-    "trackColor": {
-      "disabled": "#1f000000",
-      "dragged": "#51ff5722",
-      "empty": "#51ff5722",
-      "error": "#51ff5722",
-      "focused": "#51ff5722",
-      "hovered": "#51ff5722",
-      "pressed": "#51ff5722",
-      "scrolledUnder": "#51ff5722",
-      "selected": "#80db3e03"
-    },
-    "trackOutlineColor": {
-      "disabled": "#1f000000",
-      "dragged": "#51ff5722",
-      "empty": "#51ff5722",
-      "error": "#51ff5722",
-      "focused": "#51ff5722",
-      "hovered": "#51ff5722",
-      "pressed": "#51ff5722",
-      "scrolledUnder": "#51ff5722",
-      "selected": "#80db3e03"
-    }
-  },
   "textTheme": {
     "bodyLarge": {
       "color": "#ff231917",
@@ -1186,5 +1151,5 @@
   },
   "unselectedWidgetColor": "#8a000000",
   "useMaterial3": true,
-  "visualDensity": "compact"
+  "visualDensity": "standard"
 }
